@@ -3,7 +3,7 @@ TITLE ANPU // Local Intelligence Node
 COLOR 0A
 
 echo ========================================================
-echo   ANPU // MULTI-DOMAIN ANOMALY INTELLIGENCE ENGINE
+echo   ANPU // MULTI-DOMAIN & ICS ANOMALY INTELLIGENCE ENGINE
 echo   Operational Node: Active [Local Windows Execution]
 echo ========================================================
 echo.
@@ -17,7 +17,11 @@ if errorlevel 1 (
 )
 
 echo.
-echo [+] Step 2: Running Isolation Forest anomaly scoring engine...
+echo [+] Step 2: Polling passive ICS registers (Modbus/TCP simulation)...
+py anpu_ics_sim.py
+
+echo.
+echo [+] Step 3: Running Isolation Forest anomaly scoring engine...
 py anpu_anomaly_engine.py
 
 :END

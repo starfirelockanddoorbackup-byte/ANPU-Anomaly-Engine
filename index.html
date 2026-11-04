@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ANPU // Multi-Domain Anomaly Intelligence Engine</title>
-    <!-- Include Chart.js from CDN -->
+    <!-- Chart.js CDN for Live Telemetry Rendering -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -15,6 +15,7 @@
             --text-accent: #00ff66;
             --warn-color: #ff3333;
             --caution-color: #ffaa00;
+            --info-color: #00ccff;
         }
 
         * {
@@ -28,6 +29,7 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             padding: 20px;
+            line-height: 1.5;
         }
 
         header {
@@ -40,13 +42,19 @@
         }
 
         .system-title h1 {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             color: var(--text-accent);
             letter-spacing: 2px;
         }
 
+        .system-title p {
+            font-size: 0.75rem;
+            color: #778899;
+            letter-spacing: 1px;
+        }
+
         .system-status {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--caution-color);
             background: rgba(255, 170, 0, 0.1);
             padding: 6px 12px;
@@ -54,36 +62,49 @@
             border-radius: 4px;
         }
 
-        /* Operator Alert Console Box */
-        .alert-console {
-            background-color: rgba(255, 51, 51, 0.08);
-            border: 1px solid var(--warn-color);
-            border-radius: 6px;
-            padding: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 0 15px rgba(255, 51, 51, 0.15);
-        }
-
-        .alert-header {
+        /* Navigation Tabs */
+        .nav-tabs {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-            color: var(--warn-color);
-            font-weight: bold;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px 18px;
+            cursor: pointer;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
             letter-spacing: 1px;
+            transition: all 0.2s ease-in-out;
+            border-radius: 4px;
         }
 
-        .alert-body {
-            font-size: 0.9rem;
-            color: #ffcccc;
-            line-height: 1.4;
+        .tab-btn:hover, .tab-btn.active {
+            background-color: rgba(0, 255, 102, 0.1);
+            border-color: var(--text-accent);
+            color: var(--text-accent);
         }
 
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Card & Layout Styles */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
             gap: 20px;
+            margin-bottom: 20px;
         }
 
         .card {
@@ -92,6 +113,7 @@
             border-radius: 6px;
             padding: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
         }
 
         .card-header {
@@ -115,6 +137,7 @@
             background: rgba(0, 255, 102, 0.1);
             color: var(--text-accent);
             border: 1px solid var(--text-accent);
+            border-radius: 3px;
         }
 
         .chart-wrapper {
@@ -123,8 +146,96 @@
             width: 100%;
         }
 
+        /* Operator Alert Console */
+        .alert-console {
+            background-color: rgba(255, 51, 51, 0.08);
+            border: 1px solid var(--warn-color);
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 25px;
+        }
+
+        .alert-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            color: var(--warn-color);
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .alert-body {
+            font-size: 0.9rem;
+            color: #ffcccc;
+            line-height: 1.4;
+        }
+
+        /* Interactive Triage Gate Box */
+        .triage-gate {
+            background-color: rgba(0, 204, 255, 0.05);
+            border: 1px solid var(--info-color);
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .triage-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .t-btn {
+            background: rgba(0, 204, 255, 0.1);
+            border: 1px solid var(--info-color);
+            color: var(--info-color);
+            padding: 8px 15px;
+            cursor: pointer;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+
+        .t-btn:hover {
+            background: var(--info-color);
+            color: #000;
+        }
+
+        /* Typography & Info Blocks */
+        h2 {
+            color: #ffffff;
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            border-left: 3px solid var(--text-accent);
+            padding-left: 10px;
+        }
+
+        p, ul {
+            margin-bottom: 15px;
+            font-size: 0.92rem;
+            color: #a0b0c0;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        code {
+            background: #1a232d;
+            color: var(--text-accent);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.85rem;
+        }
+
         footer {
-            margin-top: 30px;
+            margin-top: 40px;
             text-align: center;
             font-size: 0.75rem;
             color: #556677;
@@ -138,76 +249,172 @@
     <header>
         <div class="system-title">
             <h1>ANPU // ANOMALY INTELLIGENCE ENGINE</h1>
+            <p>MATTHEWS OPERATIONS LAB &bull; RESILIENT EDGE INFRASTRUCTURE DIVISION</p>
         </div>
         <div class="system-status">
-            NODE STATUS: ACTIVE [LOCAL SYNC]
+            NODE STATUS: ACTIVE [AIR-GAPPED READY]
         </div>
     </header>
 
-    <!-- High-Priority Operator Alert Console -->
-    <div class="alert-console">
-        <div class="alert-header">
-            <span>[!] OPERATOR ADVISORY & EXTREME THREAT LOG</span>
-            <span style="font-size: 0.75rem;">SYSTEM PRIORITY: HIGH</span>
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('overview')">[01] OVERVIEW & GOALS</button>
+        <button class="tab-btn" onclick="switchTab('dashboard')">[02] LIVE DASHBOARD & CONSOLE</button>
+        <button class="tab-btn" onclick="switchTab('mechanics')">[03] ENGINE MECHANICS</button>
+        <button class="tab-btn" onclick="switchTab('onboarding')">[04] BETA TESTING ONBOARDING</button>
+    </div>
+
+    <!---------------- TAB 01: OVERVIEW ---------------->
+    <div id="overview" class="tab-content active">
+        <div class="card">
+            <h2>Project Vision & Core Objectives</h2>
+            <p><strong>ANPU</strong> is an autonomous, air-gapped, and local-first telemetry monitoring engine built under <strong>Matthews Operations Lab</strong>. In an era of increasing infrastructure fragility, supply chain shocks, and cyber-physical convergence threats, traditional cloud-dependent security tools fail the moment wide-area communication links degrade.</p>
+            <p>ANPU serves as the sensory and diagnostic layer for resilient edge nodes. It ingests multi-domain telemetry vectors entirely offline, processing data locally without cloud dependencies, API subscriptions, or data leakage.</p>
         </div>
-        <div class="alert-body" id="alertText">
-            &gt; MONITORING ALL SECTORS. [INFO VACUUM DETECTED]: Physical grid frequency deviation and BGP route shifts observed in Sector 4 preceding mainstream reporting. Hybrid Threat Index (HTI) is approaching escalation threshold. Operators advised to verify local telemetry logs.
+
+        <div class="grid-container">
+            <div class="card">
+                <h2>What Makes ANPU Unique?</h2>
+                <ul>
+                    <li><strong>Zero-Cloud Footprint:</strong> Runs entirely on sovereign hardware using local SQLite data storage and standard Python libraries.</li>
+                    <li><strong>Multi-Domain Convergence:</strong> Correlates disparate vectors—such as BGP routing anomalies, grid frequency jitter, SCADA probing, GNSS jamming, and media narrative divergence—into a single unified threat index.</li>
+                    <li><strong>Unsupervised Intelligence:</strong> Employs scikit-learn Isolation Forest models to establish hyper-repetitive baselines and flag structural deviations without requiring massive cloud retraining datasets.</li>
+                    <li><strong>Human-in-the-Loop Governance:</strong> Strictly enforces an out-of-band operator triage gate, ensuring automated systems act solely as an advisory oracle rather than executing unverified control-plane shutdowns.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h2>Operational Philosophy</h2>
+                <p>Industrial Control Systems (ICS) and critical infrastructure networks are hyper-repetitive and deterministic. ANPU is designed around the <em>Asymmetric and Austere</em> framework—providing maximum situational awareness with minimal hardware overhead.</p>
+                <p>By keeping the monitoring node passive (mirroring SPAN ports or hardware data diodes), ANPU identifies early-stage reconnaissance and pre-positioning lateral movement long before disruptive payloads can be deployed.</p>
+            </div>
         </div>
     </div>
 
-    <div class="grid-container">
-        <!-- Maritime Pillar -->
-        <div class="card">
-            <div class="card-header">
-                <h3>PILLAR I: MARITIME (AIS / Dark Transits)</h3>
-                <span class="metric-badge">STABLE</span>
+    <!---------------- TAB 02: LIVE DASHBOARD ---------------->
+    <div id="dashboard" class="tab-content">
+        <!-- High-Priority Operator Alert Console -->
+        <div class="alert-console">
+            <div class="alert-header">
+                <span>[!] OPERATOR ADVISORY & EXTREME THREAT LOG</span>
+                <span style="font-size: 0.75rem;">SYSTEM PRIORITY: HIGH</span>
             </div>
-            <div class="chart-wrapper"><canvas id="maritimeChart"></canvas></div>
+            <div class="alert-body">
+                &gt; MONITORING ALL SECTORS. [INFO VACUUM DETECTED]: Physical grid frequency deviation and BGP route shifts observed in Sector 4 preceding mainstream reporting. Hybrid Threat Index (HTI) approaching escalation threshold. Operators advised to verify local telemetry logs.
+            </div>
         </div>
 
-        <!-- Cyber Pillar -->
-        <div class="card">
-            <div class="card-header">
-                <h3>PILLAR II: CYBER (SCADA Probing)</h3>
-                <span class="metric-badge" style="color: var(--caution-color); border-color: var(--caution-color); background: rgba(255,170,0,0.1);">ELEVATED</span>
+        <div class="grid-container">
+            <!-- Maritime Pillar -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>PILLAR I: MARITIME (AIS / Dark Transits)</h3>
+                    <span class="metric-badge">STABLE</span>
+                </div>
+                <div class="chart-wrapper"><canvas id="maritimeChart"></canvas></div>
             </div>
-            <div class="chart-wrapper"><canvas id="cyberChart"></canvas></div>
+
+            <!-- Cyber Pillar -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>PILLAR II: CYBER (SCADA Probing)</h3>
+                    <span class="metric-badge" style="color: var(--caution-color); border-color: var(--caution-color); background: rgba(255,170,0,0.1);">ELEVATED</span>
+                </div>
+                <div class="chart-wrapper"><canvas id="cyberChart"></canvas></div>
+            </div>
+
+            <!-- Infrastructure & Backbone -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>PILLAR III: INFRASTRUCTURE (BGP & Grid Dev)</h3>
+                    <span class="metric-badge" style="color: var(--warn-color); border-color: var(--warn-color); background: rgba(255,51,51,0.1);">ANOMALY</span>
+                </div>
+                <div class="chart-wrapper"><canvas id="infrastructureChart"></canvas></div>
+            </div>
+
+            <!-- EMS & GPS Jamming -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>PILLAR IV: EMS (GNSS Jamming Index)</h3>
+                    <span class="metric-badge">WATCH</span>
+                </div>
+                <div class="chart-wrapper"><canvas id="emsChart"></canvas></div>
+            </div>
+
+            <!-- Macro-Finance Pillar -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>PILLAR V: MACRO-FINANCE (Stress Index)</h3>
+                    <span class="metric-badge">STABLE</span>
+                </div>
+                <div class="chart-wrapper"><canvas id="macroChart"></canvas></div>
+            </div>
+
+            <!-- Media Narrative Divergence -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>PILLAR VI: NARRATIVE DIVERGENCE (Spin Delta)</h3>
+                    <span class="metric-badge" style="color: var(--warn-color); border-color: var(--warn-color); background: rgba(255,51,51,0.1);">DIVERGING</span>
+                </div>
+                <div class="chart-wrapper"><canvas id="mediaChart"></canvas></div>
+            </div>
         </div>
 
-        <!-- Infrastructure & Backbone (BGP / Grid) -->
+        <!-- ICS Control-Plane Pillar -->
         <div class="card">
             <div class="card-header">
-                <h3>PILLAR III: INFRASTRUCTURE (BGP & Grid Dev)</h3>
-                <span class="metric-badge" style="color: var(--warn-color); border-color: var(--warn-color); background: rgba(255,51,51,0.1);">ANOMALY</span>
+                <h3>PILLAR VII: INDUSTRIAL CONTROL (ICS / Modbus Passive Sensor)</h3>
+                <span class="metric-badge" style="color: var(--warn-color); border-color: var(--warn-color); background: rgba(255,51,51,0.1);">LEVEL-1 WATCH</span>
             </div>
-            <div class="chart-wrapper"><canvas id="infrastructureChart"></canvas></div>
+            <div class="chart-wrapper"><canvas id="icsChart"></canvas></div>
         </div>
 
-        <!-- EMS & GPS Jamming -->
-        <div class="card">
-            <div class="card-header">
-                <h3>PILLAR IV: EMS (GPS / GNSS Jamming Index)</h3>
-                <span class="metric-badge">WATCH</span>
+        <!-- Interactive Operator Triage Gate Simulation -->
+        <div class="triage-gate">
+            <h3>[GATE] OPERATOR FEEDBACK & TRIAGE CONSOLE</h3>
+            <p style="margin-top: 8px;">Simulating human-in-the-loop validation for active anomaly cluster #1042 (HTI 8.4 - BGP/Grid Correlation).</p>
+            <div class="triage-buttons">
+                <button class="t-btn" onclick="triggerTriage('TRUE POSITIVE: Vector signature committed to threat memory.')">[T] MARK TRUE POSITIVE</button>
+                <button class="t-btn" onclick="triggerTriage('FALSE ALARM: Local model sensitivity adjusted.')">[F] MARK FALSE ALARM</button>
+                <button class="t-btn" onclick="triggerTriage('SKIPPED: Maintaining current operating posture.')">[S] SKIP / HOLD</button>
             </div>
-            <div class="chart-wrapper"><canvas id="emsChart"></canvas></div>
+            <p id="triageResult" style="margin-top: 15px; color: var(--text-accent); font-weight: bold;"></p>
         </div>
+    </div>
 
-        <!-- Macro-Finance Pillar -->
+    <!---------------- TAB 03: MECHANICS ---------------->
+    <div id="mechanics" class="tab-content">
         <div class="card">
-            <div class="card-header">
-                <h3>PILLAR V: MACRO-FINANCE (Stress Index)</h3>
-                <span class="metric-badge">STABLE</span>
-            </div>
-            <div class="chart-wrapper"><canvas id="macroChart"></canvas></div>
+            <h2>Behind the Scenes: The "Hacker Hunter" Architecture</h2>
+            <p>ANPU operates on a strict separation of concerns between deterministic data ingestion, unsupervised machine learning, and human-governed intervention.</p>
+            <ul>
+                <li><strong>Step 1: Passive Ingestion (`anpu_ingest.py` & `anpu_ics_sim.py`):</strong> Scripts aggregate multi-domain metrics and industrial Modbus register polls into a local SQLite database (`anpu_telemetry.db`) without interacting with control planes.</li>
+                <li><strong>Step 2: Unsupervised Scoring (`anpu_anomaly_engine.py`):</strong> A scikit-learn Isolation Forest model constructs a feature matrix from historical cycles, computing anomaly path scores and the aggregated Hybrid Threat Index (HTI).</li>
+                <li><strong>Step 3: Network Hardening & Data Diodes:</strong> In a production physical deployment, telemetry is fed via unidirectional optical data diodes or passive SPAN switch ports, ensuring zero return pathways from the analytics node back into industrial networks.</li>
+                <li><strong>Step 4: The Out-of-Band Human Gate:</strong> If threat thresholds are breached, the system halts automated execution, presenting mandatory triage prompts to human operators to prevent false-positive automation cascades.</li>
+            </ul>
         </div>
+    </div>
 
-        <!-- Media Narrative Divergence Pillar -->
+    <!---------------- TAB 04: ONBOARDING ---------------->
+    <div id="onboarding" class="tab-content">
         <div class="card">
-            <div class="card-header">
-                <h3>PILLAR VI: NARRATIVE DIVERGENCE (Spin Delta)</h3>
-                <span class="metric-badge" style="color: var(--warn-color); border-color: var(--warn-color); background: rgba(255,51,51,0.1);">DIVERGING</span>
-            </div>
-            <div class="chart-wrapper"><canvas id="mediaChart"></canvas></div>
+            <h2>Beta Testing Onboarding & Deployment Guide</h2>
+            <p>ANPU is currently open for beta testing among trusted engineers, homelab operators, and infrastructure security professionals. Because the system is built with zero external dependencies, deployment takes under two minutes.</p>
+            
+            <h3 style="color: #fff; margin-top: 20px; margin-bottom: 10px;">Quick-Start Instructions (Windows Local Node):</h3>
+            <ul style="list-style-type: decimal; padding-left: 20px;">
+                <li>Clone or download the repository from GitHub.</li>
+                <li>Ensure Python is installed with required libraries (`pip install pandas scikit-learn`).</li>
+                <li>Double-click <code>run_anpu.bat</code> to execute the automated ingestion, ICS simulation, and anomaly scoring cycle.</li>
+                <li>Review the terminal readout and complete the operator triage prompt.</li>
+            </ul>
+
+            <h3 style="color: #fff; margin-top: 20px; margin-bottom: 10px;">Targeted Beta Profiles:</h3>
+            <ul>
+                <li><strong>Homelab & Developer Track:</strong> Focus on testing the zero-cloud footprint, local SQLite persistence, and lightweight Python architecture.</li>
+                <li><strong>OT & ICS Security Track:</strong> Audit the passive sensor logic, data-diode architectural boundaries, and advisory-only triage flow.</li>
+                <li><strong>Resilience & Operations Track:</strong> Evaluate degraded-bandwidth situational awareness and localized reporting speed.</li>
+            </ul>
         </div>
     </div>
 
@@ -216,6 +423,20 @@
     </footer>
 
     <script>
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Triage Simulation Feedback
+        function triggerTriage(message) {
+            document.getElementById('triageResult').innerText = "[ACTION RECORDED]: " + message;
+        }
+
+        // Chart.js Visualizations
         Chart.defaults.color = '#8899aa';
         Chart.defaults.borderColor = '#21303d';
         const timeLabels = ['T-5h', 'T-4h', 'T-3h', 'T-2h', 'T-1h', 'NOW'];
@@ -253,6 +474,12 @@
         new Chart(document.getElementById('mediaChart'), {
             type: 'line',
             data: { labels: timeLabels, datasets: [{ label: 'Narrative Divergence Score', data: [15, 20, 35, 60, 75, 88], borderColor: '#ff3333', backgroundColor: 'rgba(255, 51, 51, 0.05)', fill: true, tension: 0.2 }] },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        new Chart(document.getElementById('icsChart'), {
+            type: 'line',
+            data: { labels: timeLabels, datasets: [{ label: 'ICS Threat Index & PLC Jitter', data: [1.2, 1.0, 1.5, 2.1, 1.8, 4.2], borderColor: '#ff3333', backgroundColor: 'rgba(255, 51, 51, 0.05)', fill: true, tension: 0.2 }] },
             options: { responsive: true, maintainAspectRatio: false }
         });
     </script>
