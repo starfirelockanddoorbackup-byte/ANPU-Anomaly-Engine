@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANPU // Multi-Domain Anomaly Engine</title>
+    <title>ANPU // Multi-Domain Anomaly Intelligence Engine</title>
     <!-- Include Chart.js from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -36,7 +36,7 @@
             align-items: center;
             border-bottom: 2px solid var(--border-color);
             padding-bottom: 15px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .system-title h1 {
@@ -52,6 +52,32 @@
             padding: 6px 12px;
             border: 1px solid var(--caution-color);
             border-radius: 4px;
+        }
+
+        /* Operator Alert Console Box */
+        .alert-console {
+            background-color: rgba(255, 51, 51, 0.08);
+            border: 1px solid var(--warn-color);
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 0 15px rgba(255, 51, 51, 0.15);
+        }
+
+        .alert-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            color: var(--warn-color);
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .alert-body {
+            font-size: 0.9rem;
+            color: #ffcccc;
+            line-height: 1.4;
         }
 
         .grid-container {
@@ -78,13 +104,13 @@
         }
 
         .card-header h3 {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             color: #ffffff;
             letter-spacing: 1px;
         }
 
         .metric-badge {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             padding: 3px 8px;
             background: rgba(0, 255, 102, 0.1);
             color: var(--text-accent);
@@ -93,7 +119,7 @@
 
         .chart-wrapper {
             position: relative;
-            height: 240px;
+            height: 220px;
             width: 100%;
         }
 
@@ -111,135 +137,122 @@
 
     <header>
         <div class="system-title">
-            <h1>ANPU // ANOMALY ENGINE TELEMETRY</h1>
+            <h1>ANPU // ANOMALY INTELLIGENCE ENGINE</h1>
         </div>
         <div class="system-status">
-            STATUS: ACTIVE MONITORING [LIVE]
+            NODE STATUS: ACTIVE [LOCAL SYNC]
         </div>
     </header>
+
+    <!-- High-Priority Operator Alert Console -->
+    <div class="alert-console">
+        <div class="alert-header">
+            <span>[!] OPERATOR ADVISORY & EXTREME THREAT LOG</span>
+            <span style="font-size: 0.75rem;">SYSTEM PRIORITY: HIGH</span>
+        </div>
+        <div class="alert-body" id="alertText">
+            &gt; MONITORING ALL SECTORS. [INFO VACUUM DETECTED]: Physical grid frequency deviation and BGP route shifts observed in Sector 4 preceding mainstream reporting. Hybrid Threat Index (HTI) is approaching escalation threshold. Operators advised to verify local telemetry logs.
+        </div>
+    </div>
 
     <div class="grid-container">
         <!-- Maritime Pillar -->
         <div class="card">
             <div class="card-header">
-                <h3>PILLAR I: MARITIME (AIS / Dark Activity)</h3>
-                <span class="metric-badge">NORM</span>
+                <h3>PILLAR I: MARITIME (AIS / Dark Transits)</h3>
+                <span class="metric-badge">STABLE</span>
             </div>
-            <div class="chart-wrapper">
-                <canvas id="maritimeChart"></canvas>
-            </div>
+            <div class="chart-wrapper"><canvas id="maritimeChart"></canvas></div>
         </div>
 
         <!-- Cyber Pillar -->
         <div class="card">
             <div class="card-header">
-                <h3>PILLAR II: CYBER (SCADA / Probing)</h3>
+                <h3>PILLAR II: CYBER (SCADA Probing)</h3>
                 <span class="metric-badge" style="color: var(--caution-color); border-color: var(--caution-color); background: rgba(255,170,0,0.1);">ELEVATED</span>
             </div>
-            <div class="chart-wrapper">
-                <canvas id="cyberChart"></canvas>
+            <div class="chart-wrapper"><canvas id="cyberChart"></canvas></div>
+        </div>
+
+        <!-- Infrastructure & Backbone (BGP / Grid) -->
+        <div class="card">
+            <div class="card-header">
+                <h3>PILLAR III: INFRASTRUCTURE (BGP & Grid Dev)</h3>
+                <span class="metric-badge" style="color: var(--warn-color); border-color: var(--warn-color); background: rgba(255,51,51,0.1);">ANOMALY</span>
             </div>
+            <div class="chart-wrapper"><canvas id="infrastructureChart"></canvas></div>
+        </div>
+
+        <!-- EMS & GPS Jamming -->
+        <div class="card">
+            <div class="card-header">
+                <h3>PILLAR IV: EMS (GPS / GNSS Jamming Index)</h3>
+                <span class="metric-badge">WATCH</span>
+            </div>
+            <div class="chart-wrapper"><canvas id="emsChart"></canvas></div>
         </div>
 
         <!-- Macro-Finance Pillar -->
         <div class="card">
             <div class="card-header">
-                <h3>PILLAR III: MACRO-FINANCE (Stress Index)</h3>
+                <h3>PILLAR V: MACRO-FINANCE (Stress Index)</h3>
                 <span class="metric-badge">STABLE</span>
             </div>
-            <div class="chart-wrapper">
-                <canvas id="macroChart"></canvas>
-            </div>
+            <div class="chart-wrapper"><canvas id="macroChart"></canvas></div>
         </div>
 
         <!-- Media Narrative Divergence Pillar -->
         <div class="card">
             <div class="card-header">
-                <h3>PILLAR IV: MEDIA DIVERGENCE (Spin vs Reality)</h3>
+                <h3>PILLAR VI: NARRATIVE DIVERGENCE (Spin Delta)</h3>
                 <span class="metric-badge" style="color: var(--warn-color); border-color: var(--warn-color); background: rgba(255,51,51,0.1);">DIVERGING</span>
             </div>
-            <div class="chart-wrapper">
-                <canvas id="mediaChart"></canvas>
-            </div>
+            <div class="chart-wrapper"><canvas id="mediaChart"></canvas></div>
         </div>
     </div>
 
     <footer>
-        MATTHEWS OPERATIONS LAB &bull; SECURE LOCAL INGESTION NODE &bull; ANPU FRAMEWORK
+        MATTHEWS OPERATIONS LAB &bull; ANPU FRAMEWORK &bull; OPEN-SOURCE INFRASTRUCTURE DEFENSE
     </footer>
 
     <script>
-        // Shared Chart Configuration defaults for tactical dark theme
         Chart.defaults.color = '#8899aa';
         Chart.defaults.borderColor = '#21303d';
-
         const timeLabels = ['T-5h', 'T-4h', 'T-3h', 'T-2h', 'T-1h', 'NOW'];
 
-        // 1. Maritime Chart
         new Chart(document.getElementById('maritimeChart'), {
             type: 'line',
-            data: {
-                labels: timeLabels,
-                datasets: [{
-                    label: 'AIS Dark Transits / Anomalies',
-                    data: [2, 1, 3, 2, 5, 4],
-                    borderColor: '#00ff66',
-                    backgroundColor: 'rgba(0, 255, 102, 0.05)',
-                    fill: true,
-                    tension: 0.2
-                }]
-            },
+            data: { labels: timeLabels, datasets: [{ label: 'Dark Transits', data: [2, 1, 3, 2, 5, 4], borderColor: '#00ff66', backgroundColor: 'rgba(0, 255, 102, 0.05)', fill: true, tension: 0.2 }] },
             options: { responsive: true, maintainAspectRatio: false }
         });
 
-        // 2. Cyber Chart
         new Chart(document.getElementById('cyberChart'), {
             type: 'line',
-            data: {
-                labels: timeLabels,
-                datasets: [{
-                    label: 'SCADA Probes / Sec Events',
-                    data: [12, 18, 25, 42, 38, 55],
-                    borderColor: '#ffaa00',
-                    backgroundColor: 'rgba(255, 170, 0, 0.05)',
-                    fill: true,
-                    tension: 0.2
-                }]
-            },
+            data: { labels: timeLabels, datasets: [{ label: 'SCADA Probes', data: [12, 18, 25, 42, 38, 55], borderColor: '#ffaa00', backgroundColor: 'rgba(255, 170, 0, 0.05)', fill: true, tension: 0.2 }] },
             options: { responsive: true, maintainAspectRatio: false }
         });
 
-        // 3. Macro-Finance Chart
+        new Chart(document.getElementById('infrastructureChart'), {
+            type: 'line',
+            data: { labels: timeLabels, datasets: [{ label: 'BGP Leaks / Grid Freq Dev', data: [1, 1, 2, 4, 3, 6], borderColor: '#ff3333', backgroundColor: 'rgba(255, 51, 51, 0.05)', fill: true, tension: 0.2 }] },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        new Chart(document.getElementById('emsChart'), {
+            type: 'line',
+            data: { labels: timeLabels, datasets: [{ label: 'GNSS Degradation Index', data: [0.2, 0.3, 0.5, 0.4, 1.1, 1.2], borderColor: '#00ccff', backgroundColor: 'rgba(0, 204, 255, 0.05)', fill: true, tension: 0.2 }] },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
         new Chart(document.getElementById('macroChart'), {
             type: 'line',
-            data: {
-                labels: timeLabels,
-                datasets: [{
-                    label: 'Liquidity / Volatility Index',
-                    data: [45, 46, 48, 47, 50, 49],
-                    borderColor: '#00ccff',
-                    backgroundColor: 'rgba(0, 204, 255, 0.05)',
-                    fill: true,
-                    tension: 0.2
-                }]
-            },
+            data: { labels: timeLabels, datasets: [{ label: 'Financial Stress', data: [45, 46, 48, 47, 50, 49], borderColor: '#00ffcc', backgroundColor: 'rgba(0, 255, 204, 0.05)', fill: true, tension: 0.2 }] },
             options: { responsive: true, maintainAspectRatio: false }
         });
 
-        // 4. Media Narrative Divergence Chart
         new Chart(document.getElementById('mediaChart'), {
             type: 'line',
-            data: {
-                labels: timeLabels,
-                datasets: [{
-                    label: 'Divergence Score (Hype vs Ground Truth)',
-                    data: [15, 20, 35, 60, 75, 88],
-                    borderColor: '#ff3333',
-                    backgroundColor: 'rgba(255, 51, 51, 0.05)',
-                    fill: true,
-                    tension: 0.2
-                }]
-            },
+            data: { labels: timeLabels, datasets: [{ label: 'Narrative Divergence Score', data: [15, 20, 35, 60, 75, 88], borderColor: '#ff3333', backgroundColor: 'rgba(255, 51, 51, 0.05)', fill: true, tension: 0.2 }] },
             options: { responsive: true, maintainAspectRatio: false }
         });
     </script>
