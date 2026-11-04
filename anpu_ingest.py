@@ -1,99 +1,74 @@
-import os
 import sqlite3
+import os
 from datetime import datetime
 
-# Define database path ensuring the 'data' directory is automatically created
-DB_DIR = "data"
-DB_NAME = os.path.join(DB_DIR, "anpu_telemetry.db")
+DB_PATH = "data/anpu_telemetry.db"
 
-def init_multidomain_db():
-    """Initializes the SQLite database and creates tables for all intelligence pillars."""
-    os.makedirs(DB_DIR, exist_ok=True)
-    conn = sqlite3.connect(DB_NAME)
+def init_db():
+    os.makedirs("data", exist_ok=True)
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     
-    # 1. Maritime Logistics Table
+    # Expanded Multi-Domain Telemetry Table covering all intelligence pillars
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS maritime_metrics (
+        CREATE TABLE IF NOT EXISTS telemetry_logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             timestamp TEXT,
-            chokepoint_id TEXT,
-            congestion_index REAL,
-            dark_vessel_count INTEGER
-        )
-    ''')
-    
-    # 2. Cyber Telemetry & Perimeter Probing Table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS cyber_events (
-            timestamp TEXT,
-            sector TEXT,
-            scan_velocity REAL,
-            exploit_chatter_score REAL
-        )
-    ''')
-    
-    # 3. Macro-Financial Signals Table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS macro_finance (
-            timestamp TEXT,
-            indicator_name TEXT,
-            spread_value REAL,
-            liquidity_index REAL
-        )
-    ''')
-    
-    # 4. Underground / Dark Web Chatter Table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS underground_signals (
-            timestamp TEXT,
-            topic_vector TEXT,
-            mention_velocity REAL,
-            credential_dumps INTEGER
-        )
-    ''')
-    
-    # 5. Media Narrative & Ground Reporting Divergence Table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS media_bias_signals (
-            timestamp TEXT,
-            headline_topic TEXT,
-            left_slant_volume INTEGER,
-            right_slant_volume INTEGER,
-            independent_ground_reports INTEGER,
-            narrative_divergence_score REAL
+            maritime_dark_transits INTEGER,
+            cyber_scada_probes INTEGER,
+            bgp_route_anomalies INTEGER,
+            grid_frequency_deviation REAL,
+            gps_jamming_index REAL,
+            macro_volatility_index REAL,
+            media_divergence_score REAL,
+            information_vacuum_flag INTEGER,
+            hti_score REAL
         )
     ''')
     
     conn.commit()
     conn.close()
-    print("[+] ANPU Multi-Domain Database schema initialized successfully.")
+    print("[+] ANPU Multi-Domain Extended Schema initialized successfully.")
 
-def ingest_telemetry_cycle():
-    """Ingests a synchronized multi-domain telemetry snapshot across all pillars."""
-    conn = sqlite3.connect(DB_NAME)
+def ingest_recon_cycle():
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    now = datetime.utcnow().isoformat()
     
-    # Insert synchronized vectors
-    cursor.execute("INSERT INTO maritime_metrics VALUES (?, ?, ?, ?)", 
-                   (now, "CHOKEPOINT_ALPHA", 84.5, 12))
-                   
-    cursor.execute("INSERT INTO cyber_events VALUES (?, ?, ?, ?)", 
-                   (now, "ENERGY_GRID", 92.1, 78.4))
-                   
-    cursor.execute("INSERT INTO macro_finance VALUES (?, ?, ?, ?)", 
-                   (now, "SOVEREIGN_SPREAD", 4.25, -1.8))
-                   
-    cursor.execute("INSERT INTO underground_signals VALUES (?, ?, ?, ?)", 
-                   (now, "ICS_EXPLOIT_STAGING", 88.0, 5))
-                   
-    cursor.execute("INSERT INTO media_bias_signals VALUES (?, ?, ?, ?, ?, ?)",
-                   (now, "GLOBAL_SUPPLY_DISRUPTION", 450, 420, 85, 85.0))
-                   
+    timestamp = datetime.utcnow().isoformat()
+    
+    # Simulated incoming telemetry across all recon vectors
+    maritime_dark = 4
+    cyber_probes = 55
+    bgp_anomalies = 2          # BGP Route leaks / prefix shifts
+    grid_dev = 0.04            # Frequency deviation from stable baseline (Hz)
+    gps_jamming = 1.2          # GNSS degradation index
+    macro_volatility = 49.2    # Financial stress indicator
+    media_divergence = 88.5    # Spin vs. ground reality delta
+    info_vacuum = 1            # 1 if physical anomalies precede mainstream reporting
+    
+    # Calculate Hybrid Threat Index (HTI) across weighted multi-domain pillars
+    hti_score = (
+        (maritime_dark * 1.5) + 
+        (cyber_probes * 0.5) + 
+        (bgp_anomalies * 3.0) + 
+        (grid_dev * 20.0) + 
+        (gps_jamming * 4.0) + 
+        (media_divergence * 0.8)
+    ) / 10.0
+
+    cursor.execute('''
+        INSERT INTO telemetry_logs (
+            timestamp, maritime_dark_transits, cyber_scada_probes, 
+            bgp_route_anomalies, grid_frequency_deviation, gps_jamming_index, 
+            macro_volatility_index, media_divergence_score, information_vacuum_flag, hti_score
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (timestamp, maritime_dark, cyber_probes, bgp_anomalies, grid_dev, 
+          gps_jamming, macro_volatility, media_divergence, info_vacuum, hti_score))
+    
     conn.commit()
     conn.close()
-    print(f"[+] Synchronized multi-domain telemetry cycle ingested at {now}")
+    print(f"[+] Recon cycle ingested at {timestamp} // Calculated HTI Score: {hti_score:.2f}")
 
 if __name__ == "__main__":
-    init_multidomain_db()
-    ingest_telemetry_cycle()
+    init_db()
+    ingest_recon_cycle()
