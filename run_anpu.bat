@@ -17,12 +17,24 @@ if errorlevel 1 (
 )
 
 echo.
-echo [+] Step 2: Polling passive ICS registers (Modbus/TCP simulation)...
+echo [+] Step 2: Polling passive ICS registers (Modbus simulation)...
 py anpu_ics_sim.py
 
 echo.
-echo [+] Step 3: Running Isolation Forest anomaly scoring engine...
+echo [+] Step 3: Running ANPU Evolution Engine (Model Retraining)...
+py evolution_engine.py
+
+echo.
+echo [+] Step 4: Running Isolation Forest anomaly scoring engine...
 py anpu_anomaly_engine.py
+
+echo.
+echo [+] Step 5: Launching Active Honey-PLC Proxy Listener (Port 502)...
+echo [+] Press CTRL+C to terminate the active tripwire listener.
+echo ========================================================
+
+:: Spin up the active proxy trap in the foreground
+py honey_proxy.py
 
 :END
 echo.
